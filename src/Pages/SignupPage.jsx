@@ -9,49 +9,32 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { app } from "../Utils/firebase.config";
-import SuccessModal from "../Components/SuccessModal";
+import { app } from "../../firebase.config";
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const auth = getAuth(app);
+
+  const clearInputs = () => {
+    setEmail("");
+    setPassword("");
+  };
 
   const handleSignup = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
-        setShowSuccessModal(true);
+        // clearInputs();
       })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        // ..
-      });
+      .catch(() => {});
   };
   const handleGoogleAuth = () => {
     const googleProvider = new GoogleAuthProvider();
     signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        // const credential = GoogleAuthProvider.credentialFromResult(result);
-        // const token = credential.accessToken;
-        const user = result.user;
-        console.log(user);
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        // const errorCode = error.code;
-        // const errorMessage = error.message;
-        // // The email of the user's account used.
-        // const email = error.customData.email;
-        // // The AuthCredential type that was used.
-        // const credential = GoogleAuthProvider.credentialFromError(error);
-        console.log(error);
-        // ...
-      });
+      .then(() => {})
+      .catch(() => {});
   };
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -59,16 +42,7 @@ const SignupPage = () => {
 
   return (
     <>
-      <div className={showSuccessModal ? `block` : `hidden`}>
-        <SuccessModal message={"Successful"} />
-      </div>
-      <div
-        className={
-          showSuccessModal
-            ? `hidden`
-            : `flex flex-row justify-center items-center h-screen `
-        }
-      >
+      <div className="flex flex-row justify-center items-center h-screen">
         <div className="bg-white rounded-2xl drop-shadow-2xl py-3 px-5 pt-8">
           <h1 className="text-3xl font-semibold text-center">Get started</h1>
           <p className="text-lg font-normal text-center text-gray-300">
@@ -94,6 +68,7 @@ const SignupPage = () => {
             })}
             onSubmit={(values, { setSubmitting }) => {
               handleSignup();
+
               setTimeout(() => {
                 setEmail(values.email);
                 setPassword(values.password);
